@@ -29,6 +29,8 @@
     --display:'Big Shoulders Display', sans-serif;
     --body:'Inter', sans-serif;
     --mono:'JetBrains Mono', monospace;
+    --mx:50%;
+    --my:0%;
   }
 
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -68,6 +70,23 @@
     z-index:1;
   }
 
+  /* ---------- EFEITOS DINÂMICOS GLOBAIS ---------- */
+  .scroll-progress{
+    position:fixed; top:0; left:0;
+    height:3px; width:0%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green), 0 0 2px var(--green);
+    z-index:200;
+    transition:width .08s linear;
+  }
+
+  .spotlight{
+    position:fixed; inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:radial-gradient(650px circle at var(--mx) var(--my), rgba(76,255,122,0.07), transparent 42%);
+  }
+
   .eyebrow{
     font-family:var(--mono);
     font-size:12.5px;
@@ -99,12 +118,19 @@
     background:rgba(20,23,26,0.82);
     backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border);
+    transition:box-shadow .3s ease, background .3s ease;
+  }
+  header.scrolled{
+    box-shadow:0 12px 30px -18px rgba(0,0,0,0.75);
+    background:rgba(16,19,22,0.92);
   }
   nav{
     display:flex; align-items:center; justify-content:space-between;
     padding:18px 32px;
     max-width:1180px; margin:0 auto;
+    transition:padding .25s ease;
   }
+  header.scrolled nav{ padding:12px 32px; }
   .logo{
     display:flex; align-items:center; gap:10px;
     font-family:var(--display); font-weight:800; font-size:20px;
@@ -115,16 +141,31 @@
     background:var(--green);
     box-shadow:0 0 14px var(--green);
     transform:rotate(45deg);
+    animation:dot-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes dot-pulse{
+    0%,100%{ box-shadow:0 0 8px var(--green); }
+    50%{ box-shadow:0 0 18px var(--green), 0 0 4px #fff; }
   }
   .nav-links{display:flex; gap:32px; font-size:14.5px; font-weight:500; color:var(--text-muted);}
+  .nav-links a{ position:relative; padding-bottom:2px; }
+  .nav-links a::after{
+    content:'';
+    position:absolute; left:0; bottom:-2px;
+    width:0%; height:1px;
+    background:var(--green);
+    transition:width .25s ease;
+  }
   .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::after{ width:100%; }
   .nav-cta{
     font-family:var(--mono); font-size:13px; font-weight:500;
     border:1px solid var(--border-strong);
     padding:9px 18px; border-radius:100px;
     transition:all .2s ease;
+    display:inline-block;
   }
-  .nav-cta:hover{border-color:var(--green); color:var(--green); background:var(--green-dim);}
+  .nav-cta:hover{border-color:var(--green); color:var(--green); background:var(--green-dim); transform:translateY(-1px);}
   .nav-mobile-hide{display:flex;}
   @media (max-width:760px){ .nav-mobile-hide{display:none;} }
 
@@ -144,6 +185,8 @@
   .hero h1{
     font-size:clamp(40px, 6vw, 74px);
     margin:18px 0 22px;
+    opacity:0;
+    animation:rise-in .8s ease .1s forwards;
   }
   .hero h1 .accent{color:var(--green);}
   .hero p.lede{
@@ -151,20 +194,48 @@
     color:var(--text-muted);
     max-width:46ch;
     margin-bottom:32px;
+    opacity:0;
+    animation:rise-in .8s ease .28s forwards;
   }
-  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px;}
+  .hero .eyebrow{ opacity:0; animation:rise-in .7s ease 0s forwards; }
+  .hero-ctas{
+    display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px;
+    opacity:0;
+    animation:rise-in .8s ease .42s forwards;
+  }
+  .hero-meta{
+    opacity:0;
+    animation:rise-in .8s ease .56s forwards;
+  }
+
+  @keyframes rise-in{
+    from{ opacity:0; transform:translateY(16px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
   .btn{
     font-family:var(--body); font-weight:700; font-size:14.5px;
     padding:14px 26px; border-radius:100px;
     display:inline-flex; align-items:center; gap:9px;
     transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
     cursor:pointer; border:none;
+    will-change:transform;
   }
   .btn-primary{
     background:var(--green); color:#0c1310;
     box-shadow:0 0 0 0 rgba(76,255,122,0.5);
+    position:relative;
+    overflow:hidden;
   }
-  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(76,255,122,0.55); }
+  .btn-primary::before{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.55) 45%, transparent 60%);
+    transform:translateX(-120%);
+    transition:transform .6s ease;
+  }
+  .btn-primary:hover::before{ transform:translateX(120%); }
+  .btn-primary:hover{ box-shadow:0 10px 30px -8px rgba(76,255,122,0.55); }
   .btn-ghost{
     background:transparent; border:1px solid var(--border-strong); color:var(--text);
   }
@@ -184,7 +255,13 @@
     padding:22px;
     position:relative;
     box-shadow:0 40px 80px -40px rgba(0,0,0,0.6);
+    transition:transform .25s ease, box-shadow .25s ease;
+    transform-style:preserve-3d;
+    will-change:transform;
+    opacity:0;
+    animation:rise-in .9s ease .3s forwards;
   }
+  .floor-card:hover{ box-shadow:0 50px 90px -35px rgba(0,0,0,0.7); }
   .floor-card-head{
     display:flex; justify-content:space-between; align-items:center;
     margin-bottom:14px;
@@ -260,9 +337,18 @@
     border:1px solid var(--border);
     border-radius:var(--radius);
     padding:26px 24px 24px;
-    transition:border-color .2s ease, transform .2s ease;
+    transition:border-color .2s ease, transform .3s ease, box-shadow .3s ease;
   }
-  .problem-card:hover{ transform:translateY(-4px); border-color:var(--border-strong); }
+  .problem-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--border-strong);
+    box-shadow:0 20px 40px -24px rgba(0,0,0,0.6);
+  }
+  .problem-card:nth-child(1){ transition-delay:0s; }
+  .problem-card:nth-child(2){ transition-delay:.08s; }
+  .problem-card:nth-child(3){ transition-delay:.16s; }
+  .problem-icon{ transition:transform .35s ease; }
+  .problem-card:hover .problem-icon{ transform:scale(1.12) rotate(-4deg); }
   .alert-tag{
     display:inline-flex; align-items:center; gap:7px;
     font-family:var(--mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase;
@@ -321,6 +407,11 @@
     border:1px solid var(--border);
     border-radius:16px;
     padding:24px;
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .pillar-visual:hover{
+    transform:translateY(-4px);
+    box-shadow:0 24px 46px -28px rgba(0,0,0,0.65);
   }
 
   /* ---------- BENEFITS ---------- */
@@ -332,7 +423,8 @@
     overflow:hidden;
   }
   @media (max-width:800px){ .benefits-grid{grid-template-columns:1fr;} }
-  .benefit-col{ background:var(--bg-alt); padding:36px 32px; }
+  .benefit-col{ background:var(--bg-alt); padding:36px 32px; transition:background .25s ease; }
+  .benefit-col:hover{ background:var(--surface); }
   .benefit-col h3{
     font-size:22px; text-transform:none; letter-spacing:0; font-weight:800; margin-bottom:26px;
     display:flex; align-items:center; gap:10px;
@@ -343,9 +435,11 @@
   .benefit-row{
     display:flex; justify-content:space-between; align-items:baseline;
     padding:16px 0; border-top:1px solid var(--border);
+    transition:padding-left .25s ease;
   }
+  .benefit-row:hover{ padding-left:6px; }
   .benefit-row:first-of-type{ border-top:none; }
-  .benefit-num{ font-family:var(--mono); font-size:28px; font-weight:700; }
+  .benefit-num{ font-family:var(--mono); font-size:28px; font-weight:700; display:inline-block; min-width:64px; }
   .benefit-label{ color:var(--text-muted); font-size:14px; max-width:22ch; text-align:right; }
 
   /* ---------- CTA ---------- */
@@ -376,12 +470,17 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
     .reveal{ opacity:1; transform:none; }
+    .hero h1, .hero p.lede, .hero .eyebrow, .hero-ctas, .hero-meta, .floor-card{ opacity:1 !important; animation:none !important; transform:none !important; }
+    .scroll-progress, .spotlight{ display:none; }
   }
 </style>
 </head>
 <body>
 
-<header>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="spotlight" id="spotlight"></div>
+
+<header id="siteHeader">
   <nav>
     <div class="logo"><span class="dot"></span>GreenFlow</div>
     <div class="nav-links nav-mobile-hide">
@@ -413,7 +512,7 @@
         </div>
       </div>
 
-      <div class="floor-card">
+      <div class="floor-card" id="floorCard">
         <div class="floor-card-head">
           <span>Mapa da sala — piso térreo</span>
           <span class="live-pill"><span class="blink"></span>ao vivo</span>
@@ -680,17 +779,17 @@
         <p>O mesmo dado de sensores gera valor dos dois lados do balcão: experiência para quem treina, eficiência para quem administra.</p>
       </div>
 
-      <div class="benefits-grid reveal">
+      <div class="benefits-grid reveal" id="benefitsGrid">
         <div class="benefit-col">
           <h3><i style="background:var(--green)"></i>Para o aluno</h3>
-          <div class="benefit-row"><span class="benefit-num" style="color:var(--green)">-70%</span><span class="benefit-label">tempo parado esperando aparelho</span></div>
+          <div class="benefit-row"><span class="benefit-num count" style="color:var(--green)" data-target="-70" data-suffix="%">0%</span><span class="benefit-label">tempo parado esperando aparelho</span></div>
           <div class="benefit-row"><span class="benefit-num" style="color:var(--green)">1</span><span class="benefit-label">rota única, sem decisão manual no meio do treino</span></div>
-          <div class="benefit-row"><span class="benefit-num" style="color:var(--green)">100%</span><span class="benefit-label">dos avisos direto no app, em tempo real</span></div>
+          <div class="benefit-row"><span class="benefit-num count" style="color:var(--green)" data-target="100" data-suffix="%">0%</span><span class="benefit-label">dos avisos direto no app, em tempo real</span></div>
         </div>
         <div class="benefit-col">
           <h3><i style="background:var(--amber)"></i>Para a academia</h3>
-          <div class="benefit-row"><span class="benefit-num" style="color:var(--amber)">-90%</span><span class="benefit-label">tempo de professores procurando peso</span></div>
-          <div class="benefit-row"><span class="benefit-num" style="color:var(--amber)">+22%</span><span class="benefit-label">capacidade efetiva na sala nos horários de pico</span></div>
+          <div class="benefit-row"><span class="benefit-num count" style="color:var(--amber)" data-target="-90" data-suffix="%">0%</span><span class="benefit-label">tempo de professores procurando peso</span></div>
+          <div class="benefit-row"><span class="benefit-num count" style="color:var(--amber)" data-target="22" data-suffix="%" data-showplus="true">0%</span><span class="benefit-label">capacidade efetiva na sala nos horários de pico</span></div>
           <div class="benefit-row"><span class="benefit-num" style="color:var(--amber)">24/7</span><span class="benefit-label">inventário de halteres auditado sozinho</span></div>
         </div>
       </div>
@@ -721,10 +820,93 @@
 </footer>
 
 <script>
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
-  }, {threshold:0.15});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  /* ---------- Reveal ao rolar + contador animado nos benefícios ---------- */
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function animateCount(el){
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || '';
+    const showPlus = el.dataset.showplus === 'true';
+    if (reducedMotion || isNaN(target)) {
+      el.textContent = (showPlus && target > 0 ? '+' : '') + target + suffix;
+      return;
+    }
+    const duration = 1100;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(target * eased);
+      el.textContent = (showPlus && val > 0 ? '+' : '') + val + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = (showPlus && target > 0 ? '+' : '') + target + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        if (e.target.id === 'benefitsGrid') {
+          e.target.querySelectorAll('.count').forEach(animateCount);
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  /* ---------- Barra de progresso de rolagem ---------- */
+  const progressBar = document.getElementById('scrollProgress');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = (scrolled || 0) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  /* ---------- Nav retrátil ao rolar ---------- */
+  const header = document.getElementById('siteHeader');
+  function updateHeader(){
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+
+  if (!reducedMotion) {
+    /* ---------- Spotlight seguindo o cursor ---------- */
+    const spotlight = document.getElementById('spotlight');
+    window.addEventListener('mousemove', (e) => {
+      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+      document.documentElement.style.setProperty('--my', e.clientY + 'px');
+    });
+
+    /* ---------- Botões magnéticos ---------- */
+    document.querySelectorAll('.btn').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.3}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
+
+    /* ---------- Tilt 3D no mockup do mapa da sala ---------- */
+    const floorCard = document.getElementById('floorCard');
+    if (floorCard && window.matchMedia('(hover: hover)').matches) {
+      floorCard.addEventListener('mousemove', (e) => {
+        const rect = floorCard.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        floorCard.style.transform = `perspective(900px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg)`;
+      });
+      floorCard.addEventListener('mouseleave', () => {
+        floorCard.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+  }
 </script>
 
 <script>
