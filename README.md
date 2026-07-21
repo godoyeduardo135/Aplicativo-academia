@@ -139,7 +139,7 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 [Linkedin - Eduardo Godoy](https://www.linkedin.com/in/eduardo-godoy-b73615272/)
 
 **Eduardo Godoy**
-[Intagram - Eduardo Godoy](https://www.instagram.com/eduardogodoys_?igsh=MW4yZWx5bjZ2ZXI4bw%3D%3D)
+[Instagram - Eduardo Godoy](https://www.instagram.com/eduardogodoys_?igsh=MW4yZWx5bjZ2ZXI4bw%3D%3D)
 
 ---
 
