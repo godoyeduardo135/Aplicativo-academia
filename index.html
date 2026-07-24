@@ -25,6 +25,8 @@
     --amber-dim:rgba(255,184,76,0.12);
     --red:#ff6157;
     --red-dim:rgba(255,97,87,0.12);
+    --blue:#4fb3ff;
+    --blue-dim:rgba(79,179,255,0.14);
     --radius:14px;
     --display:'Big Shoulders Display', sans-serif;
     --body:'Inter', sans-serif;
@@ -467,6 +469,245 @@
   }
   .reveal.in{ opacity:1; transform:none; }
 
+  /* ---------- PROSE (recomendações) ---------- */
+  .prose{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px 30px;
+    margin-top:24px;
+  }
+  .prose h3{
+    font-family:var(--body); font-weight:800; text-transform:none;
+    font-size:16.5px; letter-spacing:0; margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .prose h3::before{
+    content:''; width:6px; height:6px; border-radius:50%; background:var(--green);
+  }
+  .prose ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .prose li{
+    font-size:14.5px; color:var(--text-muted); padding-left:18px; position:relative;
+  }
+  .prose li::before{
+    content:'—'; position:absolute; left:0; color:var(--green-deep,#3fcf6a); color:var(--green);
+  }
+  .prose li strong{ color:var(--text); font-weight:600; }
+  .prose-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:820px){ .prose-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- CONSOLE (dashboard + mapa + simulador) ---------- */
+  .console{
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:24px;
+  }
+
+  /* Controles do simulador */
+  .sim-controls{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    padding-bottom:20px; margin-bottom:22px; border-bottom:1px solid var(--border);
+  }
+  .sim-controls .label{
+    font-family:var(--mono); font-size:11.5px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; display:block;
+  }
+  .size-btns{ display:flex; gap:8px; }
+  .size-btn{
+    font-family:var(--body); font-size:13.5px; font-weight:600;
+    background:var(--surface); border:1px solid var(--border-strong); color:var(--text-muted);
+    padding:9px 16px; border-radius:100px; cursor:pointer; transition:all .18s ease;
+  }
+  .size-btn:hover{ border-color:var(--green); color:var(--text); }
+  .size-btn.active{ background:var(--green-dim); border-color:var(--green); color:var(--green); }
+
+  .sim-toggle{
+    font-family:var(--body); font-weight:700; font-size:14px;
+    padding:12px 24px; border-radius:100px; border:none; cursor:pointer;
+    background:var(--green); color:#0c1310;
+    display:inline-flex; align-items:center; gap:9px;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .sim-toggle:hover{ transform:translateY(-1px); box-shadow:0 10px 24px -10px rgba(76,255,122,0.5); }
+  .sim-toggle.running{ background:var(--red); color:#2b0d0a; }
+  .sim-toggle .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; }
+  .sim-toggle.running .dot{ animation:blink 1s infinite; }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+  .sim-status{
+    font-family:var(--mono); font-size:12px; color:var(--text-faint);
+  }
+  .sim-status b{ color:var(--green); font-weight:500; }
+
+  /* Dashboard */
+  .dash-grid{
+    display:grid;
+    grid-template-columns:1.2fr repeat(5, 1fr);
+    gap:14px;
+    margin-bottom:24px;
+  }
+  @media (max-width:1000px){ .dash-grid{ grid-template-columns:1fr 1fr 1fr; } }
+  @media (max-width:620px){ .dash-grid{ grid-template-columns:1fr 1fr; } }
+
+  .metric-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    min-height:118px;
+    transition:border-color .2s ease;
+  }
+  .metric-card:hover{ border-color:var(--border-strong); }
+  .metric-label{
+    font-family:var(--mono); font-size:10.5px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.07em;
+  }
+  .metric-value{
+    font-family:var(--mono); font-weight:700; font-size:30px; margin-top:10px;
+  }
+  .metric-sub{ font-size:11.5px; color:var(--text-faint); margin-top:4px; }
+
+  /* Hero: ocupação */
+  .metric-hero{
+    grid-row:span 1;
+    display:flex; flex-direction:row; align-items:center; gap:16px;
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+  }
+  .gauge{ position:relative; width:78px; height:78px; flex-shrink:0; }
+  .gauge svg{ transform:rotate(-90deg); }
+  .gauge-value{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; font-size:16px;
+  }
+  .metric-hero-text .metric-label{ margin-bottom:2px; }
+  .metric-hero-text .metric-value{ font-size:26px; margin-top:2px; }
+
+  .metric-value.green{ color:var(--green); }
+  .metric-value.amber{ color:var(--amber); }
+  .metric-value.red{ color:var(--red); }
+  .metric-value.blue{ color:var(--blue); }
+
+  /* Mapa */
+  .map-panel{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:16px;
+    align-items:start;
+  }
+  @media (max-width:860px){ .map-panel{ grid-template-columns:1fr; } }
+
+  .map-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    position:relative;
+  }
+  .map-head{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;
+    flex-wrap:wrap; gap:10px;
+  }
+  .map-title{ font-family:var(--mono); font-size:12px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.07em; }
+  .map-legend{ display:flex; gap:14px; flex-wrap:wrap; font-family:var(--mono); font-size:11px; color:var(--text-faint); }
+  .map-legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .map-legend i{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  .map-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(112px, 1fr));
+    gap:10px;
+  }
+
+  .entrance-tile{
+    grid-column:1 / -1;
+    background:var(--surface-2);
+    border:1px dashed var(--border-strong);
+    border-radius:10px;
+    padding:10px 14px;
+    font-family:var(--mono); font-size:11px; color:var(--text-faint);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:2px;
+  }
+  .entrance-tile .dot{ width:6px; height:6px; border-radius:50%; background:var(--text-faint); }
+
+  .station{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 10px;
+    text-align:left;
+    cursor:pointer;
+    display:flex; flex-direction:column; gap:6px;
+    transition:transform .15s ease, border-color .3s ease, background .3s ease;
+    font-family:var(--body); color:var(--text);
+  }
+  .station:hover{ transform:translateY(-2px); border-color:var(--border-strong); }
+  .station.selected{ border-color:var(--green); box-shadow:0 0 0 1px var(--green); }
+  .station-dot-row{ display:flex; align-items:center; gap:6px; }
+  .station-dot{ width:8px; height:8px; border-radius:50%; transition:background .3s ease, box-shadow .3s ease; }
+  .station-status-text{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:0.05em; }
+  .station-name{ font-size:12.5px; font-weight:600; line-height:1.25; }
+
+  .station.status-free .station-dot{ background:var(--green); box-shadow:0 0 8px var(--green); }
+  .station.status-free .station-status-text{ color:var(--green); }
+  .station.status-reserved .station-dot{ background:var(--amber); box-shadow:0 0 8px var(--amber); }
+  .station.status-reserved .station-status-text{ color:var(--amber); }
+  .station.status-occupied .station-dot{ background:var(--red); box-shadow:0 0 8px var(--red); }
+  .station.status-occupied .station-status-text{ color:var(--red); }
+  .station.status-maintenance .station-dot{ background:var(--blue); box-shadow:0 0 8px var(--blue); }
+  .station.status-maintenance .station-status-text{ color:var(--blue); }
+
+  .person-dot{
+    position:absolute;
+    width:8px; height:8px; border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 10px #fff, 0 0 4px var(--green);
+    pointer-events:none;
+    z-index:5;
+    transition:left .9s cubic-bezier(.4,0,.2,1), top .9s cubic-bezier(.4,0,.2,1), opacity .3s ease;
+  }
+
+  /* Drawer de detalhes */
+  .drawer{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px;
+    min-height:100%;
+  }
+  .drawer-empty{
+    color:var(--text-faint); font-size:13.5px;
+    display:flex; align-items:center; justify-content:center;
+    min-height:220px; text-align:center; padding:0 10px;
+  }
+  .drawer-title{ font-size:19px; font-weight:800; margin-bottom:4px; }
+  .drawer-status{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em;
+    display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:100px;
+    margin-bottom:18px;
+  }
+  .drawer-status i{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .drawer-row{ margin-bottom:16px; }
+  .drawer-row .k{ font-family:var(--mono); font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .drawer-row .v{ font-size:14.5px; color:var(--text); }
+  .drawer-history{ list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .drawer-history li{
+    font-size:12.5px; color:var(--text-muted);
+    border-top:1px solid var(--border); padding-top:8px;
+    display:flex; justify-content:space-between; gap:8px;
+  }
+  .drawer-history li:first-child{ border-top:none; padding-top:0; }
+  .drawer-close{
+    position:absolute; top:16px; right:16px;
+    background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:18px;
+    line-height:1;
+  }
+  .drawer{ position:relative; }
+
+
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
     .reveal{ opacity:1; transform:none; }
@@ -487,6 +728,7 @@
       <a href="#problema">O problema</a>
       <a href="#solucao">Como funciona</a>
       <a href="#beneficios">Benefícios</a>
+      <a href="#dashboard-proposal">Dashboard</a>
     </div>
     <a href="https://wa.me/5519998007852?text=Ol%C3%A1%2C%20Gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o" target="_blank" rel="noopener noreferrer" class="nav-cta">Agendar demonstração</a>
   </nav>
@@ -796,6 +1038,214 @@
     </div>
   </section>
 
+  <div class="wrap"><div class="divider"></div></div>
+
+  <!-- ================= CONSOLE (dashboard + mapa + simulador juntos) ================= -->
+  <section id="dashboard-proposal">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">01 · 02 · 03 — Console ao vivo</span>
+        <h2>O sistema em funcionamento</h2>
+        <p>Dashboard e mapa não são telas separadas — são a mesma fonte de dados vista de dois jeitos: números agregados de um lado, posição de cada aparelho do outro. Use os controles abaixo para simular o fluxo da academia e ver as duas visões reagindo juntas.</p>
+      </div>
+
+      <div class="console">
+
+        <!-- Controles do simulador -->
+        <div class="sim-controls">
+          <div>
+            <span class="label">Simulador · tamanho da academia</span>
+            <div class="size-btns" id="sizeBtns">
+              <button class="size-btn" data-size="8">Pequena · 8 aparelhos</button>
+              <button class="size-btn active" data-size="16">Média · 16 aparelhos</button>
+              <button class="size-btn" data-size="28">Grande · 28 aparelhos</button>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <button class="sim-toggle" id="simToggle"><span class="dot"></span>Simular fluxo</button>
+            <div class="sim-status" id="simStatus">Simulação parada · dados estáticos de exemplo</div>
+          </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dash-grid">
+          <div class="metric-card metric-hero">
+            <div class="gauge">
+              <svg width="78" height="78" viewBox="0 0 78 78">
+                <circle cx="39" cy="39" r="33" fill="none" stroke="var(--surface-2)" stroke-width="8"/>
+                <circle id="gaugeCircle" cx="39" cy="39" r="33" fill="none" stroke="var(--green)" stroke-width="8" stroke-linecap="round" stroke-dasharray="207.3" stroke-dashoffset="207.3"/>
+              </svg>
+              <div class="gauge-value" id="occupancyValue">0%</div>
+            </div>
+            <div class="metric-hero-text">
+              <div class="metric-label">Ocupação</div>
+              <div class="metric-sub" id="occupancySub">— de — aparelhos</div>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Aparelhos livres</div>
+            <div class="metric-value green" id="freeValue">—</div>
+            <div class="metric-sub">prontos para uso</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Aparelhos ocupados</div>
+            <div class="metric-value red" id="occupiedValue">—</div>
+            <div class="metric-sub">em uso agora</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Tempo médio de espera</div>
+            <div class="metric-value amber" id="waitValue">—</div>
+            <div class="metric-sub">minutos, estimado</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Pessoas treinando</div>
+            <div class="metric-value" id="trainingValue">—</div>
+            <div class="metric-sub">no aparelho ou a caminho</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Rotas ativas</div>
+            <div class="metric-value" id="routesValue">—</div>
+            <div class="metric-sub">reservas + trajetos em curso</div>
+          </div>
+        </div>
+
+        <!-- Mapa + drawer -->
+        <div class="map-panel">
+          <div class="map-card">
+            <div class="map-head">
+              <span class="map-title">Mapa da sala — clique em um aparelho</span>
+              <div class="map-legend">
+                <span><i style="background:var(--green)"></i>Livre</span>
+                <span><i style="background:var(--amber)"></i>Reservado</span>
+                <span><i style="background:var(--red)"></i>Ocupado</span>
+                <span><i style="background:var(--blue)"></i>Manutenção</span>
+              </div>
+            </div>
+            <div class="map-grid" id="mapGrid">
+              <div class="entrance-tile" id="entranceTile"><span class="dot"></span>Catraca — entrada de alunos</div>
+              <!-- estações inseridas via JS -->
+            </div>
+          </div>
+
+          <div class="drawer" id="drawer">
+            <div class="drawer-empty">Clique em um aparelho no mapa para ver detalhes: tempo de uso, próximo aluno agendado e histórico.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECOMENDAÇÕES: DASHBOARD ================= -->
+  <div class="wrap"><div class="divider"></div></div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Racional de design · 01</span>
+        <h2>Hierarquia visual do dashboard</h2>
+        <p>Nem toda métrica merece o mesmo peso visual. A escolha de qual número fica grande, qual fica pequeno e em que ordem eles aparecem já é, em si, uma decisão de produto.</p>
+      </div>
+
+      <div class="prose-grid reveal">
+        <div class="prose">
+          <h3>Por que Ocupação é a métrica-herói</h3>
+          <ul>
+            <li><strong>Resume tudo em um número só.</strong> Um gerente olhando de longe precisa de uma resposta em menos de 1 segundo: "a academia está cheia ou vazia agora?"</li>
+            <li><strong>Aciona decisão imediata</strong> — acima de um limiar (ex: 85%), é o gatilho para abrir uma sala extra, chamar mais professores ou pausar novas entradas.</li>
+            <li>Por isso ela ganha o <strong>gauge circular</strong>, maior área e a primeira posição no grid — as outras cinco métricas são contexto que explica o porquê desse número.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <h3>Por que as outras cinco vêm em segundo plano</h3>
+          <ul>
+            <li><strong>Aparelhos livres/ocupados</strong> são a decomposição direta da ocupação — úteis para o aluno decidir "vale a pena ir agora?".</li>
+            <li><strong>Tempo médio de espera</strong> é a métrica mais acionável para o <em>aluno</em>, mas secundária para o gerente, que já vê isso refletido na ocupação.</li>
+            <li><strong>Pessoas treinando</strong> vs. <strong>aparelhos ocupados</strong> propositalmente não são o mesmo número — a diferença mostra quantas pessoas estão "em trânsito" entre aparelhos, um sinal de fluxo saudável (ou de gargalo, se a diferença for grande e não diminuir).</li>
+            <li><strong>Rotas ativas</strong> é a métrica mais técnica/operacional; fica por último porque interessa mais à equipe de operação do que ao usuário final.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECOMENDAÇÕES: MAPA ================= -->
+  <div class="wrap"><div class="divider"></div></div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Racional de design · 02</span>
+        <h2>Interatividade do mapa</h2>
+        <p>O mapa responde a duas perguntas diferentes dependendo de quem olha: o aluno pergunta "o que está livre?"; o gerente pergunta "o que está gerando gargalo?". O mesmo componente serve aos dois com a mesma cor, no mesmo relance.</p>
+      </div>
+
+      <div class="prose-grid reveal">
+        <div class="prose">
+          <h3>Por que clique (não hover) para abrir detalhes</h3>
+          <ul>
+            <li>Em <strong>totens e tablets</strong> na própria academia não existe hover — o clique/toque precisa ser a interação primária, não um fallback.</li>
+            <li>Hover para detalhes densos (histórico, próximo aluno) cria "flicker" incômodo quando o mouse só passa por cima sem intenção — o clique é um compromisso deliberado do usuário.</li>
+            <li>O <strong>painel lateral persistente</strong> (em vez de um modal que bloqueia a tela) deixa o gerente comparar o aparelho selecionado com o resto do mapa ao mesmo tempo — importante quando ele está decidindo se remaneja um aluno para outro equipamento parecido.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <h3>Por que a paleta de 4 cores fixas</h3>
+          <ul>
+            <li>4 estados cobrem os únicos ramos de decisão que importam: <strong>posso usar agora / vai estar livre em breve / não posso usar / está fora de operação</strong>.</li>
+            <li>Verde/vermelho aproveita uma associação universal (livre/ocupado) que não precisa de legenda para um usuário casual entender em 2 segundos.</li>
+            <li>Âmbar para "reservado" evita confundir com vermelho — reservado ainda pode virar livre a qualquer momento se o aluno não aparecer, então merece uma cor "de alerta leve", não de bloqueio.</li>
+            <li>Azul para manutenção é deliberadamente frio/neutro — sinaliza "isso não é sobre fluxo de pessoas, é um problema de equipamento" para a equipe técnica.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RECOMENDAÇÕES TÉCNICAS: SIMULADOR ================= -->
+  <div class="wrap"><div class="divider"></div></div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Implementação técnica</span>
+        <h2>Como o simulador funcionaria em produção</h2>
+        <p>O protótipo acima gera estados aleatórios no navegador para demonstrar o comportamento do sistema. Em produção, a mesma interface seria alimentada por dados reais — a arquitetura abaixo troca "números aleatórios" por "sensores reais" sem mudar a tela.</p>
+      </div>
+
+      <div class="prose-grid reveal">
+        <div class="prose">
+          <h3>Arquitetura de dados em tempo real</h3>
+          <ul>
+            <li><strong>Sensores por aparelho</strong> (presença/pressão, os mesmos descritos no sistema GreenFlow) publicam mudança de estado via protocolo leve de IoT, como <strong>MQTT</strong>, para um broker central.</li>
+            <li>Um serviço backend consome o broker e mantém a <strong>máquina de estados de cada aparelho</strong> (livre → reservado → ocupado → livre, ou → manutenção a qualquer momento).</li>
+            <li>O backend expõe essas mudanças ao navegador via <strong>WebSocket</strong> (ou Server-Sent Events) — o mesmo `mapGrid` e os mesmos `metric-card` deste protótipo passam a ser atualizados por eventos reais, não por `setInterval`.</li>
+            <li>Cada transição de estado é também gravada em um <strong>banco de séries temporais</strong> (ex: TimescaleDB, InfluxDB) para alimentar relatórios históricos de ocupação por horário/dia da semana.</li>
+          </ul>
+        </div>
+        <div class="prose">
+          <h3>Do protótipo para produção — o que muda</h3>
+          <ul>
+            <li><strong>Fonte da verdade:</strong> hoje é <code>Math.random()</code> no navegador; em produção, é o estado publicado pelos sensores no broker MQTT.</li>
+            <li><strong>"Pessoas caminhando" (dots animados):</strong> hoje é decorativo; em produção pode ser alimentado pela leitura da catraca (início do trajeto) e pela confirmação de presença no aparelho (fim do trajeto), permitindo calcular o <strong>tempo real de deslocamento</strong> entre catraca e aparelho.</li>
+            <li><strong>Tempo médio de espera:</strong> hoje é uma fórmula estimada a partir da ocupação; em produção é calculado a partir da fila real de reservas pendentes por tipo de aparelho.</li>
+            <li><strong>Próximo aluno agendado:</strong> hoje é um nome sorteado; em produção vem da tabela de reservas do app do aluno, já usada no fluxo de roteirização do GreenFlow.</li>
+            <li><strong>Escala:</strong> o parâmetro "tamanho da academia" do simulador vira, em produção, simplesmente o número de sensores fisicamente instalados — a mesma interface atende uma unidade pequena ou uma rede de academias, sem mudança de código.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <div class="wrap"><div class="divider"></div></div>
+
   <!-- CTA -->
   <section class="cta-section" id="cta">
     <div class="wrap">
@@ -821,7 +1271,11 @@
 
 <script>
   /* ---------- Reveal ao rolar + contador animado nos benefícios ---------- */
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function safeMatchMedia(query){
+    try { return typeof window.matchMedia === 'function' && window.matchMedia(query).matches; }
+    catch(e){ return false; }
+  }
+  const reducedMotion = safeMatchMedia('(prefers-reduced-motion: reduce)');
 
   function animateCount(el){
     const target = parseInt(el.dataset.target, 10);
@@ -895,7 +1349,7 @@
 
     /* ---------- Tilt 3D no mockup do mapa da sala ---------- */
     const floorCard = document.getElementById('floorCard');
-    if (floorCard && window.matchMedia('(hover: hover)').matches) {
+    if (floorCard && safeMatchMedia('(hover: hover)')) {
       floorCard.addEventListener('mousemove', (e) => {
         const rect = floorCard.getBoundingClientRect();
         const px = (e.clientX - rect.left) / rect.width - 0.5;
@@ -907,6 +1361,335 @@
       });
     }
   }
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Dados de apoio ---------------- */
+  var EQUIPMENT_POOL = [
+    "Cadeira Extensora","Leg Press 45°","Supino Reto","Puxador Alto","Remada Baixa",
+    "Cadeira Flexora","Panturrilha em Pé","Esteira 01","Esteira 02","Bicicleta Ergométrica",
+    "Elíptico","Cross Trainer","Smith Machine","Rack de Agachamento","Banco Scott",
+    "Polia Tríceps","Cadeira Abdutora","Cadeira Adutora","Hack Machine","Prensa 45°",
+    "Voador Peitoral","Remo Ergométrico","Step","Barra Fixa","Paralelas",
+    "Mesa Flexora","Glúteo 4 Apoios","Crossover"
+  ];
+  var FIRST_NAMES = ["Ana","Bruno","Carla","Diego","Eduardo","Fernanda","Gabriel","Helena","Igor","Julia","Lucas","Marina","Nathan","Otávio","Paula","Rafael","Sofia","Thiago","Vitória","William"];
+
+  var STATUS_LABEL = { free:"Livre", reserved:"Reservado", occupied:"Ocupado", maintenance:"Manutenção" };
+  var STATUS_ORDER = ["free","reserved","occupied","maintenance"];
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+  function randomNextStudent(){
+    var h = randInt(7,21), m = pick([0,15,30,45]);
+    return { name: pick(FIRST_NAMES), time: String(h).padStart(2,'0')+':'+String(m).padStart(2,'0') };
+  }
+  function randomHistory(){
+    var n = randInt(2,4), out = [];
+    for (var i=0;i<n;i++){
+      out.push({ student: pick(FIRST_NAMES), duration: randInt(8,35)+' min', when: (i===0?'hoje':(i+1)+'d atrás') });
+    }
+    return out;
+  }
+
+  /* ---------------- Estado ---------------- */
+  var stations = [];
+  var simSize = 16;
+  var simRunning = false;
+  var simTimer = null;
+  var selectedId = null;
+
+  var mapGrid = document.getElementById('mapGrid');
+  var entranceTile = document.getElementById('entranceTile');
+  var drawer = document.getElementById('drawer');
+  var simToggle = document.getElementById('simToggle');
+  var simStatus = document.getElementById('simStatus');
+
+  function buildStations(size){
+    var names = shuffle(EQUIPMENT_POOL).slice(0, size);
+    stations = names.map(function(name, i){
+      var status = weightedStatus();
+      var occupiedSince = status === 'occupied' ? Date.now() - randInt(1,10)*60000 : null;
+      return {
+        id: 'st-'+i,
+        name: name,
+        status: status,
+        occupiedSince: occupiedSince,
+        nextStudent: randomNextStudent(),
+        history: randomHistory()
+      };
+    });
+  }
+
+  function weightedStatus(){
+    var r = Math.random();
+    if (r < 0.45) return 'free';
+    if (r < 0.75) return 'occupied';
+    if (r < 0.92) return 'reserved';
+    return 'maintenance';
+  }
+
+  /* ---------------- Render: mapa ---------------- */
+  function renderMap(){
+    // remove estações antigas (mantém o tile de entrada)
+    Array.prototype.slice.call(mapGrid.querySelectorAll('.station')).forEach(function(el){ el.remove(); });
+
+    stations.forEach(function(st){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'station status-' + st.status;
+      btn.dataset.id = st.id;
+      btn.innerHTML =
+        '<span class="station-dot-row"><span class="station-dot"></span>' +
+        '<span class="station-status-text">' + STATUS_LABEL[st.status] + '</span></span>' +
+        '<span class="station-name">' + st.name + '</span>';
+      btn.addEventListener('click', function(){ selectStation(st.id); });
+      mapGrid.appendChild(btn);
+    });
+  }
+
+  function updateStationEl(st){
+    var el = mapGrid.querySelector('.station[data-id="'+st.id+'"]');
+    if (!el) return;
+    STATUS_ORDER.forEach(function(s){ el.classList.remove('status-'+s); });
+    el.classList.add('status-'+st.status);
+    el.querySelector('.station-status-text').textContent = STATUS_LABEL[st.status];
+  }
+
+  /* ---------------- Render: dashboard ---------------- */
+  var gaugeCircle = document.getElementById('gaugeCircle');
+  var GAUGE_CIRC = 2 * Math.PI * 33;
+
+  function renderDashboard(movingCount){
+    var total = stations.length || 1;
+    var free = stations.filter(function(s){ return s.status==='free'; }).length;
+    var occupied = stations.filter(function(s){ return s.status==='occupied'; }).length;
+    var reserved = stations.filter(function(s){ return s.status==='reserved'; }).length;
+    var maintenance = stations.filter(function(s){ return s.status==='maintenance'; }).length;
+
+    var occupancyPct = Math.round((occupied / total) * 100);
+    var wait = Math.max(0, Math.round(2 + (occupancyPct/100)*14 + (Math.random()*2-1)));
+    var training = occupied + (movingCount||0);
+    var routes = reserved + (movingCount||0);
+
+    document.getElementById('occupancyValue').textContent = occupancyPct + '%';
+    document.getElementById('occupancySub').textContent = occupied + ' de ' + total + ' aparelhos';
+    document.getElementById('freeValue').textContent = free;
+    document.getElementById('occupiedValue').textContent = occupied;
+    document.getElementById('waitValue').textContent = wait + ' min';
+    document.getElementById('trainingValue').textContent = training;
+    document.getElementById('routesValue').textContent = routes;
+
+    var offset = GAUGE_CIRC * (1 - occupancyPct/100);
+    gaugeCircle.style.strokeDasharray = GAUGE_CIRC.toFixed(1);
+    gaugeCircle.style.strokeDashoffset = offset.toFixed(1);
+    gaugeCircle.style.stroke = occupancyPct >= 80 ? 'var(--red)' : (occupancyPct >= 50 ? 'var(--amber)' : 'var(--green)');
+
+    if (maintenance > 0){
+      document.getElementById('occupancySub').textContent += ' · ' + maintenance + ' em manutenção';
+    }
+  }
+
+  /* ---------------- Drawer ---------------- */
+  function selectStation(id){
+    selectedId = id;
+    Array.prototype.slice.call(mapGrid.querySelectorAll('.station')).forEach(function(el){
+      el.classList.toggle('selected', el.dataset.id === id);
+    });
+    renderDrawer();
+  }
+
+  function formatElapsed(ms){
+    var totalSec = Math.max(0, Math.floor(ms/1000));
+    var m = Math.floor(totalSec/60), s = totalSec%60;
+    return m + 'm ' + String(s).padStart(2,'0') + 's';
+  }
+
+  function renderDrawer(){
+    var st = stations.filter(function(s){ return s.id === selectedId; })[0];
+    if (!st){
+      drawer.innerHTML = '<div class="drawer-empty">Clique em um aparelho no mapa para ver detalhes: tempo de uso, próximo aluno agendado e histórico.</div>';
+      return;
+    }
+
+    var statusColorVar = { free:'var(--green)', reserved:'var(--amber)', occupied:'var(--red)', maintenance:'var(--blue)' }[st.status];
+    var statusBg = { free:'var(--green-dim)', reserved:'var(--amber-dim)', occupied:'var(--red-dim)', maintenance:'var(--blue-dim)' }[st.status];
+
+    var usageText = st.status === 'occupied' && st.occupiedSince
+      ? formatElapsed(Date.now() - st.occupiedSince)
+      : '—';
+
+    var historyHtml = st.history.map(function(h){
+      return '<li><span>' + h.student + '</span><span>' + h.duration + ' · ' + h.when + '</span></li>';
+    }).join('');
+
+    drawer.innerHTML =
+      '<button class="drawer-close" id="drawerClose" aria-label="Fechar">×</button>' +
+      '<div class="drawer-title">' + st.name + '</div>' +
+      '<div class="drawer-status" style="color:' + statusColorVar + ';background:' + statusBg + '"><i></i>' + STATUS_LABEL[st.status] + '</div>' +
+      '<div class="drawer-row"><div class="k">Tempo de uso atual</div><div class="v">' + usageText + '</div></div>' +
+      '<div class="drawer-row"><div class="k">Próximo aluno agendado</div><div class="v">' + st.nextStudent.name + ' · ' + st.nextStudent.time + '</div></div>' +
+      '<div class="drawer-row"><div class="k">Histórico de uso</div><ul class="drawer-history">' + historyHtml + '</ul></div>';
+
+    document.getElementById('drawerClose').addEventListener('click', function(){
+      selectedId = null;
+      Array.prototype.slice.call(mapGrid.querySelectorAll('.station')).forEach(function(el){ el.classList.remove('selected'); });
+      renderDrawer();
+    });
+  }
+
+  /* ---------------- Movimento de pessoas (dots) ---------------- */
+  var activeMovingDots = 0;
+
+  function spawnPersonDot(fromEl, toEl, onArrive){
+    if (!fromEl || !toEl) { onArrive && onArrive(); return; }
+    var mapCard = mapGrid.parentElement; // .map-card, position:relative implícito via layout
+    var mapRect = mapGrid.getBoundingClientRect();
+    var fromRect = fromEl.getBoundingClientRect();
+    var toRect = toEl.getBoundingClientRect();
+
+    var dot = document.createElement('div');
+    dot.className = 'person-dot';
+    dot.style.left = (fromRect.left - mapRect.left + fromRect.width/2) + 'px';
+    dot.style.top = (fromRect.top - mapRect.top + fromRect.height/2) + 'px';
+    mapGrid.style.position = 'relative';
+    mapGrid.appendChild(dot);
+
+    activeMovingDots++;
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        dot.style.left = (toRect.left - mapRect.left + toRect.width/2) + 'px';
+        dot.style.top = (toRect.top - mapRect.top + toRect.height/2) + 'px';
+      });
+    });
+
+    setTimeout(function(){
+      dot.style.opacity = '0';
+      setTimeout(function(){
+        dot.remove();
+        activeMovingDots = Math.max(0, activeMovingDots-1);
+        onArrive && onArrive();
+      }, 300);
+    }, 900);
+  }
+
+  /* ---------------- Loop do simulador ---------------- */
+  function simTick(){
+    var freeStations = stations.filter(function(s){ return s.status === 'free'; });
+    var occupiedStations = stations.filter(function(s){ return s.status === 'occupied' && s.occupiedSince; });
+    var maintStations = stations.filter(function(s){ return s.status === 'maintenance'; });
+
+    // 1) Ocasionalmente um aparelho livre entra em manutenção
+    if (freeStations.length > 2 && Math.random() < 0.05){
+      var mSt = pick(freeStations);
+      mSt.status = 'maintenance';
+      updateStationEl(mSt);
+    }
+
+    // 2) Ocasionalmente um aparelho em manutenção volta a ficar livre
+    if (maintStations.length > 0 && Math.random() < 0.2){
+      var backSt = pick(maintStations);
+      backSt.status = 'free';
+      updateStationEl(backSt);
+    }
+
+    // 3) Um aparelho ocupado há tempo suficiente libera (aluno termina a série)
+    occupiedStations.forEach(function(s){
+      var elapsed = Date.now() - s.occupiedSince;
+      if (elapsed > randInt(9000, 18000)){
+        s.history.unshift({ student: s.nextStudent.name, duration: Math.round(elapsed/60000)+' min', when: 'agora' });
+        s.history = s.history.slice(0,4);
+        s.status = 'free';
+        s.occupiedSince = null;
+        s.nextStudent = randomNextStudent();
+        updateStationEl(s);
+      }
+    });
+
+    // 4) Um ou dois novos alunos entram: livre -> reservado -> (dot andando) -> ocupado
+    var freshFree = stations.filter(function(s){ return s.status === 'free'; });
+    var newEntries = Math.min(freshFree.length, randInt(1,2));
+    for (var i=0;i<newEntries;i++){
+      (function(){
+        var target = pick(freshFree.filter(function(s){ return s.status === 'free'; }));
+        if (!target) return;
+        target.status = 'reserved';
+        updateStationEl(target);
+
+        var fromEl = entranceTile;
+        var toEl = mapGrid.querySelector('.station[data-id="'+target.id+'"]');
+        spawnPersonDot(fromEl, toEl, function(){
+          target.status = 'occupied';
+          target.occupiedSince = Date.now();
+          updateStationEl(target);
+          if (selectedId === target.id) renderDrawer();
+          renderDashboard(activeMovingDots);
+        });
+      })();
+    }
+
+    renderDashboard(activeMovingDots);
+    if (selectedId) renderDrawer();
+  }
+
+  function startSim(){
+    if (simRunning) return;
+    simRunning = true;
+    simToggle.classList.add('running');
+    simToggle.innerHTML = '<span class="dot"></span>Parar simulação';
+    simStatus.innerHTML = 'Simulação <b>rodando</b> · atualizando a cada ~1.4s';
+    simTimer = setInterval(simTick, 1400);
+  }
+
+  function stopSim(){
+    simRunning = false;
+    simToggle.classList.remove('running');
+    simToggle.innerHTML = '<span class="dot"></span>Simular fluxo';
+    simStatus.textContent = 'Simulação parada · dados estáticos de exemplo';
+    clearInterval(simTimer);
+  }
+
+  simToggle.addEventListener('click', function(){
+    simRunning ? stopSim() : startSim();
+  });
+
+  /* ---------------- Controles de tamanho ---------------- */
+  var sizeBtns = document.querySelectorAll('.size-btn');
+  sizeBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      sizeBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      simSize = parseInt(btn.dataset.size, 10);
+      var wasRunning = simRunning;
+      if (wasRunning) stopSim();
+      selectedId = null;
+      buildStations(simSize);
+      renderMap();
+      renderDashboard(0);
+      renderDrawer();
+      if (wasRunning) startSim();
+    });
+  });
+
+  /* ---------------- Init ---------------- */
+  buildStations(simSize);
+  renderMap();
+  renderDashboard(0);
+  renderDrawer();
+
+})();
 </script>
 
 <script>
