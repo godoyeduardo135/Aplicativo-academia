@@ -1,11 +1,8 @@
-# GreenFlow — Landing Page
+# 🟢 GreenFlow
 
-> **Projeto de TCC** — Trabalho de Conclusão de Curso do Ensino Médio Técnico em Logística.
-> Este site apresenta o GreenFlow, um sistema conceitual de logística de fluxo e inventário aplicado a academias, desenvolvido como parte do projeto final do curso.
+> Sistema inteligente de localização, logística de fluxo e previsão de ocupação para academias.
 
-Página única (single-page) apresentando o **GreenFlow**, sistema inteligente de logística de fluxo e inventário para academias. Roteirização de treinos em tempo real, controle de inventário de halteres por sensores e leitura automática na catraca.
-
-Arquivo autocontido: **HTML + CSS + JavaScript em um único arquivo** (`greenflow.html`), sem dependências de build, backend ou frameworks. Basta abrir no navegador ou publicar em qualquer servidor estático.
+Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do Ensino Médio Técnico em Logística, propondo uma solução tecnológica para otimizar o fluxo de pessoas e o gerenciamento de equipamentos em academias.
 
 ---
 
@@ -121,6 +118,19 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 
 ---
 
+## Principais Funcionalidades
+
+- 🗺️ Localização inteligente de equipamentos
+- 🤖 IA de previsão de ocupação
+- 📊 Dashboard em tempo real
+- 📈 Indicadores de utilização
+- 📍 Roteirização inteligente
+- 📦 Controle de inventário dos halteres
+- 📱 Interface responsiva
+- 💬 Integração com WhatsApp
+- 🎨 Design moderno em Dark Mode
+
+---
 ## Compatibilidade
 
 - Navegadores modernos (Chrome, Firefox, Safari, Edge — últimas versões).
@@ -130,19 +140,32 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 
 ---
 
-## 👤 Autor
+## Diferenciais
+
+- Sistema voltado para logística aplicada às academias.
+- Interface moderna inspirada em dashboards SaaS.
+- Navegação inteligente baseada na ocupação dos equipamentos.
+- Previsão de horários de pico utilizando IA.
+- Controle de inventário por sensores.
+- Código desenvolvido sem frameworks, utilizando apenas HTML, CSS e JavaScript.
+
+---
+## Autor
 
 **Eduardo Godoy**
-[GitHub - godoyeduardo135](https://github.com/godoyeduardo135)
 
-**Eduardo Godoy**
-[Linkedin - Eduardo Godoy](https://www.linkedin.com/in/eduardo-godoy-b73615272/)
-
-**Eduardo Godoy**
-[Instagram - Eduardo Godoy](https://www.instagram.com/eduardogodoys_?igsh=MW4yZWx5bjZ2ZXI4bw%3D%3D)
+- GitHub: https://github.com/godoyeduardo135
+- Linkedin: https://www.linkedin.com/in/eduardo-godoy-b73615272/
+- Instagram: https://www.instagram.com/eduardogodoys_
 
 ---
 
-## 🪪 Licença
+## Status
 
-Este repositório é de uso pessoal, desenvolvido no contexto do TCC de Logística. 
+Projeto possui um conceitual em desenvolvimento para apresentação do TCC.
+
+---
+
+## Licença
+
+Este projeto foi desenvolvido exclusivamente para fins acadêmicos como Trabalho de Conclusão de Curso (TCC). A utilização do código para estudos é permitida, porém a reprodução integral do projeto para fins comerciais depende da autorização do autor.
