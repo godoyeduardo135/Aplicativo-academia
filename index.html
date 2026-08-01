@@ -531,6 +531,7 @@
   }
   .sim-toggle:hover{ transform:translateY(-1px); box-shadow:0 10px 24px -10px rgba(76,255,122,0.5); }
   .sim-toggle.running{ background:var(--red); color:#2b0d0a; }
+  .sim-toggle:disabled{ opacity:0.4; cursor:not-allowed; box-shadow:none; transform:none; }
   .sim-toggle .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; }
   .sim-toggle.running .dot{ animation:blink 1s infinite; }
   @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
@@ -708,6 +709,202 @@
   .drawer{ position:relative; }
 
 
+  /* ---------- IA DE PREVISÃO ---------- */
+  .predict-card{
+    background:linear-gradient(155deg, rgba(255,97,87,0.09), var(--surface) 45%);
+    border:1px solid rgba(255,97,87,0.35);
+    border-radius:20px;
+    padding:32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .predict-card::before{
+    content:'';
+    position:absolute; top:-40%; right:-10%;
+    width:420px; height:420px;
+    background:radial-gradient(circle, rgba(255,97,87,0.16), transparent 70%);
+    pointer-events:none;
+  }
+
+  .predict-top{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;
+    margin-bottom:26px; position:relative; z-index:1;
+  }
+  .predict-alert-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--red-dim); border:1px solid rgba(255,97,87,0.4); color:var(--red);
+    font-family:var(--mono); font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    padding:8px 14px; border-radius:100px;
+  }
+  .predict-alert-badge svg{ width:14px; height:14px; flex-shrink:0; }
+  .predict-alert-badge .blink{
+    width:6px; height:6px; border-radius:50%; background:var(--red); animation:blink 1.3s infinite;
+  }
+  .predict-meta{
+    font-family:var(--mono); font-size:11.5px; color:var(--text-faint); text-align:right;
+  }
+  .predict-meta b{ color:var(--text-muted); font-weight:500; }
+
+  .predict-main{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:32px;
+    align-items:center;
+    position:relative; z-index:1;
+    margin-bottom:30px;
+  }
+  @media (max-width:820px){ .predict-main{ grid-template-columns:1fr; } }
+
+  .predict-when{
+    font-family:var(--mono); font-size:13px; color:var(--red);
+    text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .predict-headline{
+    font-family:var(--display); font-weight:900; text-transform:uppercase;
+    font-size:clamp(30px,4.6vw,52px); line-height:0.98; letter-spacing:-0.01em;
+    margin-bottom:14px;
+  }
+  .predict-headline .hi{ color:var(--red); }
+  .predict-sub{ color:var(--text-muted); font-size:16px; max-width:46ch; margin-bottom:20px; }
+  .predict-recommendation{
+    display:flex; gap:10px; align-items:flex-start;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; font-size:13.5px; color:var(--text-muted); max-width:52ch;
+  }
+  .predict-recommendation svg{ width:18px; height:18px; flex-shrink:0; color:var(--amber); margin-top:1px; }
+  .predict-recommendation strong{ color:var(--text); }
+
+  .predict-gauge-wrap{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .predict-gauge{ position:relative; width:170px; height:170px; }
+  .predict-gauge svg{ transform:rotate(-90deg); }
+  .predict-gauge-value{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .predict-gauge-value .num{ font-family:var(--mono); font-weight:800; font-size:40px; color:var(--red); line-height:1; }
+  .predict-gauge-value .label{ font-family:var(--mono); font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.06em; margin-top:6px; }
+  .predict-gauge-caption{ font-family:var(--mono); font-size:11px; color:var(--text-faint); text-align:center; }
+  .predict-gauge-caption b{ color:var(--red); font-weight:600; }
+
+  .predict-chart{
+    position:relative; z-index:1;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px 20px 14px;
+  }
+  .predict-chart-title{
+    font-family:var(--mono); font-size:11px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.07em; margin-bottom:16px;
+  }
+  .predict-bars{
+    display:flex; align-items:flex-end; gap:8px; height:110px;
+  }
+  .predict-bar-col{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px;
+  }
+  .predict-bar{
+    width:100%; max-width:26px; border-radius:4px 4px 2px 2px;
+    background:var(--green); opacity:0.85;
+    transition:transform .2s ease, opacity .2s ease;
+  }
+  .predict-bar-col:hover .predict-bar{ opacity:1; transform:scaleY(1.02); }
+  .predict-bar.level-amber{ background:var(--amber); }
+  .predict-bar.level-red{
+    background:var(--red);
+    box-shadow:0 0 14px rgba(255,97,87,0.55);
+  }
+  .predict-bar-hour{ font-family:var(--mono); font-size:9.5px; color:var(--text-faint); }
+  .predict-bar-col.peak .predict-bar-hour{ color:var(--red); font-weight:600; }
+
+  /* ---------- FIM IA DE PREVISÃO ---------- */
+
+  /* ---------- ANTES x DEPOIS ---------- */
+  .alert-tag.green{ color:var(--green); background:var(--green-dim); }
+
+  .ba-toggle-row{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    margin-bottom:26px;
+  }
+  .ba-toggle{
+    display:inline-flex; background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:100px; padding:4px; gap:4px;
+  }
+  .ba-toggle-btn{
+    font-family:var(--body); font-weight:700; font-size:13.5px;
+    padding:10px 20px; border-radius:100px; border:none; cursor:pointer;
+    background:transparent; color:var(--text-muted);
+    transition:background .2s ease, color .2s ease;
+  }
+  .ba-toggle-btn.active{ background:var(--surface-2); color:var(--text); }
+  .ba-toggle-btn.active.is-before{ color:var(--red); }
+  .ba-toggle-btn.active.is-after{ color:var(--green); }
+
+  .ba-summary{
+    font-family:var(--mono); font-size:13px; color:var(--text-faint);
+    display:flex; align-items:center; gap:10px;
+  }
+  .ba-summary .num{ font-size:22px; font-weight:700; }
+  .ba-summary .num.before{ color:var(--red); }
+  .ba-summary .num.after{ color:var(--green); }
+  .ba-summary .arrow{ color:var(--text-faint); }
+
+  .ba-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+  @media (max-width:900px){ .ba-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .ba-grid{ grid-template-columns:1fr; } }
+
+  .ba-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px;
+    transition:border-color .3s ease;
+  }
+  .ba-card:hover{ border-color:var(--border-strong); }
+  .ba-card-head{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .ba-icon{
+    width:40px; height:40px; flex-shrink:0; color:var(--text-muted);
+    background:var(--surface-2); border-radius:9px; padding:6px;
+  }
+  .ba-name{ font-size:14.5px; font-weight:700; line-height:1.25; }
+
+  .ba-stage{ position:relative; min-height:112px; }
+  .ba-before, .ba-after{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; gap:10px;
+    transition:opacity .35s ease, transform .35s ease;
+  }
+  .ba-grid[data-state="antes"] .ba-after{ opacity:0; transform:translateY(6px); pointer-events:none; }
+  .ba-grid[data-state="antes"] .ba-before{ opacity:1; transform:none; }
+  .ba-grid[data-state="depois"] .ba-before{ opacity:0; transform:translateY(-6px); pointer-events:none; }
+  .ba-grid[data-state="depois"] .ba-after{ opacity:1; transform:none; }
+
+  .ba-queue{ display:flex; align-items:center; gap:4px; }
+  .ba-person{ width:18px; height:18px; color:var(--red); }
+  .ba-person.single{ color:var(--green); }
+  .ba-wait{ font-family:var(--mono); font-size:11.5px; color:var(--text-faint); }
+  .ba-wait b{ color:var(--text); font-weight:600; }
+
+  .ba-notification{
+    font-family:var(--mono); font-size:11px; color:var(--green);
+    background:var(--green-dim); border-left:2px solid var(--green);
+    padding:8px 10px; border-radius:0 8px 8px 0;
+  }
+
+  .sensor-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--mono); font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+    color:var(--blue); background:var(--blue-dim); border:1px solid rgba(79,179,255,0.35);
+    padding:5px 10px; border-radius:100px; width:fit-content;
+  }
+  .sensor-badge svg{ width:12px; height:12px; }
+
+  /* ---------- FIM ANTES x DEPOIS ---------- */
+
   @media (prefers-reduced-motion: reduce){
     *{ animation:none !important; transition:none !important; }
     .reveal{ opacity:1; transform:none; }
@@ -729,6 +926,7 @@
       <a href="#solucao">Como funciona</a>
       <a href="#beneficios">Benefícios</a>
       <a href="#dashboard-proposal">Dashboard</a>
+      <a href="#antes-depois">Antes x Depois</a>
     </div>
     <a href="https://wa.me/5519998007852?text=Ol%C3%A1%2C%20Gostaria%20de%20agendar%20uma%20demonstra%C3%A7%C3%A3o" target="_blank" rel="noopener noreferrer" class="nav-cta">Agendar demonstração</a>
   </nav>
@@ -1054,11 +1252,10 @@
         <!-- Controles do simulador -->
         <div class="sim-controls">
           <div>
-            <span class="label">Simulador · tamanho da academia</span>
-            <div class="size-btns" id="sizeBtns">
-              <button class="size-btn" data-size="8">Pequena · 8 aparelhos</button>
-              <button class="size-btn active" data-size="16">Média · 16 aparelhos</button>
-              <button class="size-btn" data-size="28">Grande · 28 aparelhos</button>
+            <span class="label">Cenário · sala com 6 aparelhos</span>
+            <div class="ba-toggle" id="consoleToggle" role="tablist" aria-label="Alternar entre antes e depois do GreenFlow">
+              <button type="button" class="ba-toggle-btn is-before" data-console-state="antes" role="tab" aria-selected="false">Antes do GreenFlow</button>
+              <button type="button" class="ba-toggle-btn active is-after" data-console-state="depois" role="tab" aria-selected="true">Depois do GreenFlow</button>
             </div>
           </div>
           <div style="text-align:right;">
@@ -1066,6 +1263,7 @@
             <div class="sim-status" id="simStatus">Simulação parada · dados estáticos de exemplo</div>
           </div>
         </div>
+
 
         <!-- Dashboard -->
         <div class="dash-grid">
@@ -1246,6 +1444,107 @@
 
   <div class="wrap"><div class="divider"></div></div>
 
+  <!-- ================= IA DE PREVISÃO ================= -->
+  <section id="previsao-ia">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Inteligência artificial</span>
+        <h2>A IA já sabe quando vai lotar</h2>
+        <p>O mesmo histórico de sensores que alimenta o dashboard também treina um modelo simples de previsão de ocupação — para o aluno decidir o melhor horário antes de sair de casa, e para o gerente se antecipar ao pico.</p>
+      </div>
+
+      <div class="predict-card reveal">
+        <div class="predict-top">
+          <span class="predict-alert-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span class="blink"></span> Previsão de pico de ocupação
+          </span>
+          <div class="predict-meta">
+            <b>IA GreenFlow</b> · modelo treinado nos últimos 30 dias<br>
+            Atualizado há 12 min
+          </div>
+        </div>
+
+        <div class="predict-main">
+          <div>
+            <div class="predict-when">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Amanhã · 18h – 20h
+            </div>
+            <h3 class="predict-headline">Ocupação <span class="hi">alta</span> prevista</h3>
+            <p class="predict-sub">A IA estima <strong style="color:var(--red)">92% de ocupação</strong> amanhã entre 18h e 20h — o maior pico da semana, puxado pelo movimento pós-expediente.</p>
+            <div class="predict-recommendation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.4 1 1.2 1 2.1v.2h6v-.2c0-.9.4-1.7 1-2.1A7 7 0 0 0 12 2Z"/></svg>
+              <span><strong>Sugestão da IA:</strong> oriente os alunos a chegarem antes das 17h30 ou depois das 20h30 — o tempo médio de espera cai em até 70% fora dessa janela.</span>
+            </div>
+          </div>
+
+          <div class="predict-gauge-wrap">
+            <div class="predict-gauge">
+              <svg width="170" height="170" viewBox="0 0 170 170">
+                <circle cx="85" cy="85" r="72" fill="none" stroke="var(--surface-2)" stroke-width="14"/>
+                <circle cx="85" cy="85" r="72" fill="none" stroke="var(--red)" stroke-width="14" stroke-linecap="round"
+                  stroke-dasharray="452.4" stroke-dashoffset="36.2" style="filter:drop-shadow(0 0 8px rgba(255,97,87,0.6));"/>
+              </svg>
+              <div class="predict-gauge-value">
+                <span class="num">92%</span>
+                <span class="label">ocupação prevista</span>
+              </div>
+            </div>
+            <div class="predict-gauge-caption">Nível <b>ALTO</b> · acima de 80% aciona alerta</div>
+          </div>
+        </div>
+
+        <div class="predict-chart">
+          <div class="predict-chart-title">Previsão de ocupação por horário — amanhã</div>
+          <div class="predict-bars">
+            <div class="predict-bar-col"><div class="predict-bar level-green" style="height:15%" title="06h — 15% de ocupação prevista"></div><span class="predict-bar-hour">06h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-green" style="height:35%" title="08h — 35% de ocupação prevista"></div><span class="predict-bar-hour">08h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-green" style="height:40%" title="10h — 40% de ocupação prevista"></div><span class="predict-bar-hour">10h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-amber" style="height:55%" title="12h — 55% de ocupação prevista"></div><span class="predict-bar-hour">12h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-green" style="height:45%" title="14h — 45% de ocupação prevista"></div><span class="predict-bar-hour">14h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-amber" style="height:60%" title="16h — 60% de ocupação prevista"></div><span class="predict-bar-hour">16h</span></div>
+            <div class="predict-bar-col peak"><div class="predict-bar level-red" style="height:92%" title="18h — 92% de ocupação prevista (pico)"></div><span class="predict-bar-hour">18h</span></div>
+            <div class="predict-bar-col peak"><div class="predict-bar level-red" style="height:88%" title="20h — 88% de ocupação prevista (pico)"></div><span class="predict-bar-hour">20h</span></div>
+            <div class="predict-bar-col"><div class="predict-bar level-green" style="height:25%" title="22h — 25% de ocupação prevista"></div><span class="predict-bar-hour">22h</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="divider"></div></div>
+
+  <!-- ================= ANTES x DEPOIS ================= -->
+  <section id="antes-depois">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Impacto na prática</span>
+        <h2>O mesmo aparelho, dois cenários</h2>
+        <p>Seis equipamentos, dois jeitos de usar a academia. Alterne entre "antes" e "depois" e veja como a mesma sala vira fila de espera ou fluxo organizado, dependendo de ter ou não o app te dizendo pra onde ir.</p>
+      </div>
+
+      <div class="ba-toggle-row reveal">
+        <div class="ba-toggle" id="baToggle" role="tablist" aria-label="Alternar entre antes e depois">
+          <button type="button" class="ba-toggle-btn active is-before" data-state="antes" role="tab" aria-selected="true">Antes</button>
+          <button type="button" class="ba-toggle-btn is-after" data-state="depois" role="tab" aria-selected="false">Depois</button>
+        </div>
+        <div class="ba-summary">
+          <span>Tempo médio de espera</span>
+          <span class="num before" id="baSummaryBefore">15 min</span>
+          <span class="arrow" id="baSummaryArrow">→</span>
+          <span class="num after" id="baSummaryAfter" style="display:none;">0 min</span>
+        </div>
+      </div>
+
+      <div class="ba-grid" id="baGrid" data-state="antes">
+        <!-- cartões de equipamento inseridos via JS -->
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="divider"></div></div>
+
   <!-- CTA -->
   <section class="cta-section" id="cta">
     <div class="wrap">
@@ -1369,12 +1668,12 @@
 
   /* ---------------- Dados de apoio ---------------- */
   var EQUIPMENT_POOL = [
-    "Cadeira Extensora","Leg Press 45°","Supino Reto","Puxador Alto","Remada Baixa",
-    "Cadeira Flexora","Panturrilha em Pé","Esteira 01","Esteira 02","Bicicleta Ergométrica",
-    "Elíptico","Cross Trainer","Smith Machine","Rack de Agachamento","Banco Scott",
-    "Polia Tríceps","Cadeira Abdutora","Cadeira Adutora","Hack Machine","Prensa 45°",
-    "Voador Peitoral","Remo Ergométrico","Step","Barra Fixa","Paralelas",
-    "Mesa Flexora","Glúteo 4 Apoios","Crossover"
+    "Suporte para Agachamento",
+    "Suporte para Halteres",
+    "Banco de Supino Reto",
+    "Banco Livre Fixo",
+    "Bicicleta Ergométrica",
+    "Esteira"
   ];
   var FIRST_NAMES = ["Ana","Bruno","Carla","Diego","Eduardo","Fernanda","Gabriel","Helena","Igor","Julia","Lucas","Marina","Nathan","Otávio","Paula","Rafael","Sofia","Thiago","Vitória","William"];
 
@@ -1405,10 +1704,10 @@
 
   /* ---------------- Estado ---------------- */
   var stations = [];
-  var simSize = 16;
   var simRunning = false;
   var simTimer = null;
   var selectedId = null;
+  var consoleState = 'depois';
 
   var mapGrid = document.getElementById('mapGrid');
   var entranceTile = document.getElementById('entranceTile');
@@ -1416,9 +1715,8 @@
   var simToggle = document.getElementById('simToggle');
   var simStatus = document.getElementById('simStatus');
 
-  function buildStations(size){
-    var names = shuffle(EQUIPMENT_POOL).slice(0, size);
-    stations = names.map(function(name, i){
+  function buildStations(){
+    stations = EQUIPMENT_POOL.map(function(name, i){
       var status = weightedStatus();
       var occupiedSince = status === 'occupied' ? Date.now() - randInt(1,10)*60000 : null;
       return {
@@ -1520,6 +1818,22 @@
     var st = stations.filter(function(s){ return s.id === selectedId; })[0];
     if (!st){
       drawer.innerHTML = '<div class="drawer-empty">Clique em um aparelho no mapa para ver detalhes: tempo de uso, próximo aluno agendado e histórico.</div>';
+      return;
+    }
+
+    if (consoleState === 'antes'){
+      drawer.innerHTML =
+        '<button class="drawer-close" id="drawerClose" aria-label="Fechar">×</button>' +
+        '<div class="drawer-title">' + st.name + '</div>' +
+        '<div class="drawer-status" style="color:var(--red);background:var(--red-dim)"><i></i>Status desconhecido</div>' +
+        '<div class="drawer-row"><div class="k">Sem GreenFlow</div><div class="v">Antes do sistema, ninguém sabia se este aparelho estava livre até chegar pessoalmente e ver a fila.</div></div>' +
+        '<div class="drawer-row"><div class="k">Tempo de uso atual</div><div class="v">—</div></div>' +
+        '<div class="drawer-row"><div class="k">Próximo aluno agendado</div><div class="v">Não existia reserva — só fila por ordem de chegada</div></div>';
+      document.getElementById('drawerClose').addEventListener('click', function(){
+        selectedId = null;
+        Array.prototype.slice.call(mapGrid.querySelectorAll('.station')).forEach(function(el){ el.classList.remove('selected'); });
+        renderDrawer();
+      });
       return;
     }
 
@@ -1645,7 +1959,7 @@
   }
 
   function startSim(){
-    if (simRunning) return;
+    if (simRunning || consoleState === 'antes') return;
     simRunning = true;
     simToggle.classList.add('running');
     simToggle.innerHTML = '<span class="dot"></span>Parar simulação';
@@ -1665,30 +1979,154 @@
     simRunning ? stopSim() : startSim();
   });
 
-  /* ---------------- Controles de tamanho ---------------- */
-  var sizeBtns = document.querySelectorAll('.size-btn');
-  sizeBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      sizeBtns.forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      simSize = parseInt(btn.dataset.size, 10);
-      var wasRunning = simRunning;
-      if (wasRunning) stopSim();
-      selectedId = null;
-      buildStations(simSize);
+  /* ---------------- Toggle Antes/Depois do console ---------------- */
+  var consoleToggle = document.getElementById('consoleToggle');
+  var consoleToggleBtns = consoleToggle.querySelectorAll('.ba-toggle-btn');
+
+  function setConsoleState(state){
+    consoleState = state;
+
+    consoleToggleBtns.forEach(function(b){
+      var isActive = b.dataset.consoleState === state;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    selectedId = null;
+
+    if (state === 'antes'){
+      if (simRunning) stopSim();
+      simToggle.disabled = true;
+      simStatus.textContent = 'Sem GreenFlow · status dos aparelhos desconhecido até o aluno chegar';
+      stations.forEach(function(s){
+        s.status = 'occupied';
+        s.occupiedSince = Date.now() - randInt(10,25)*60000;
+      });
       renderMap();
       renderDashboard(0);
-      renderDrawer();
-      if (wasRunning) startSim();
-    });
+    } else {
+      simToggle.disabled = false;
+      simStatus.textContent = 'Simulação parada · dados estáticos de exemplo';
+      buildStations();
+      renderMap();
+      renderDashboard(0);
+    }
+    renderDrawer();
+  }
+
+  consoleToggle.addEventListener('click', function(e){
+    var btn = e.target.closest('.ba-toggle-btn');
+    if (!btn) return;
+    setConsoleState(btn.dataset.consoleState);
   });
 
   /* ---------------- Init ---------------- */
-  buildStations(simSize);
+  buildStations();
   renderMap();
   renderDashboard(0);
   renderDrawer();
 
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Ícones (SVG inline, estilo consistente com o resto do site) ---------------- */
+  var ICONS = {
+    agachamento: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 6v28M30 6v28M10 14h20"/></svg>',
+    halteres: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="30" x2="34" y2="30"/><circle cx="11" cy="22" r="3"/><circle cx="17" cy="22" r="3"/><line x1="13" y1="22" x2="15" y2="22"/><circle cx="23" cy="22" r="3"/><circle cx="29" cy="22" r="3"/><line x1="25" y1="22" x2="27" y2="22"/></svg>',
+    supino: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="22" width="24" height="5" rx="1"/><line x1="12" y1="27" x2="12" y2="34"/><line x1="28" y1="27" x2="28" y2="34"/><line x1="10" y1="10" x2="30" y2="10"/><circle cx="10" cy="10" r="3"/><circle cx="30" cy="10" r="3"/><line x1="16" y1="10" x2="16" y2="22"/><line x1="24" y1="10" x2="24" y2="22"/></svg>',
+    bancoLivre: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="8" y="18" width="24" height="5" rx="1"/><line x1="12" y1="23" x2="12" y2="32"/><line x1="28" y1="23" x2="28" y2="32"/></svg>',
+    bike: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="28" r="7"/><line x1="12" y1="28" x2="22" y2="14"/><line x1="12" y1="28" x2="24" y2="24"/><line x1="20" y1="12" x2="26" y2="12"/><line x1="24" y1="24" x2="30" y2="18"/><line x1="27" y1="16" x2="33" y2="16"/></svg>',
+    esteira: '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="26" width="24" height="6" rx="3"/><line x1="26" y1="26" x2="32" y2="10"/><line x1="30" y1="12" x2="36" y2="12"/></svg>'
+  };
+
+  var PERSON_ICON = '<svg viewBox="0 0 20 20" class="ba-person"><circle cx="10" cy="6" r="3.2" fill="currentColor"/><path d="M4 18c0-4 2.5-6.5 6-6.5s6 2.5 6 6.5" fill="currentColor"/></svg>';
+  var SENSOR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 12a4 4 0 0 1 8 0"/><path d="M5 12a7 7 0 0 1 14 0"/><circle cx="12" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg>';
+
+  /* ---------------- Dados dos 6 equipamentos ---------------- */
+  var EQUIPMENT = [
+    { icon:'agachamento', name:'Suporte para Agachamento', waitPeople:3, waitMin:14 },
+    { icon:'halteres',    name:'Suporte para Halteres',    waitPeople:4, waitMin:20, sensor:true },
+    { icon:'supino',      name:'Banco de Supino Reto',     waitPeople:2, waitMin:11 },
+    { icon:'bancoLivre',  name:'Banco Livre Fixo',         waitPeople:2, waitMin:9  },
+    { icon:'bike',        name:'Bicicleta Ergométrica',    waitPeople:3, waitMin:16 },
+    { icon:'esteira',     name:'Esteira',                  waitPeople:5, waitMin:22 }
+  ];
+
+  function repeatPersonIcons(n){
+    var out = '';
+    for (var i=0;i<n;i++){ out += PERSON_ICON; }
+    return out;
+  }
+
+  function renderBaGrid(){
+    var grid = document.getElementById('baGrid');
+    if (!grid) return;
+
+    grid.innerHTML = EQUIPMENT.map(function(eq){
+      var sensorBadge = eq.sensor
+        ? '<div class="sensor-badge">' + SENSOR_ICON + ' Sensor ativo</div>'
+        : '';
+
+      return (
+        '<div class="ba-card">' +
+          '<div class="ba-card-head">' +
+            '<div class="ba-icon">' + ICONS[eq.icon] + '</div>' +
+            '<div class="ba-name">' + eq.name + '</div>' +
+          '</div>' +
+          '<div class="ba-stage">' +
+            '<div class="ba-before">' +
+              '<span class="alert-tag red"><i></i>' + eq.waitPeople + ' pessoas na fila</span>' +
+              '<div class="ba-queue">' + repeatPersonIcons(eq.waitPeople) + '</div>' +
+              '<span class="ba-wait">espera estimada: <b>' + eq.waitMin + ' min</b></span>' +
+            '</div>' +
+            '<div class="ba-after">' +
+              '<span class="alert-tag green"><i></i>Em uso — sem fila</span>' +
+              '<div class="ba-queue"><span class="ba-person single">' + PERSON_ICON + '</span></div>' +
+              (sensorBadge || '<span class="ba-notification">App: comece agora, sem espera.</span>') +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  /* ---------------- Toggle Antes/Depois ---------------- */
+  function initBaToggle(){
+    var toggle = document.getElementById('baToggle');
+    var grid = document.getElementById('baGrid');
+    var summaryArrow = document.getElementById('baSummaryArrow');
+    var summaryAfter = document.getElementById('baSummaryAfter');
+    if (!toggle || !grid) return;
+
+    var buttons = toggle.querySelectorAll('.ba-toggle-btn');
+
+    toggle.addEventListener('click', function(e){
+      var btn = e.target.closest('.ba-toggle-btn');
+      if (!btn) return;
+      var state = btn.dataset.state;
+
+      buttons.forEach(function(b){
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      });
+      grid.setAttribute('data-state', state);
+
+      if (state === 'depois'){
+        summaryArrow.style.display = '';
+        summaryAfter.style.display = '';
+      } else {
+        summaryArrow.style.display = '';
+        summaryAfter.style.display = 'none';
+      }
+    });
+  }
+
+  renderBaGrid();
+  initBaToggle();
 })();
 </script>
 
