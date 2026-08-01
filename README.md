@@ -16,7 +16,7 @@ Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do Ensino Médio
 
 ## Estrutura da página
 
-1. **Header / Nav** — logo, menu de âncoras (`#problema`, `#solucao`, `#beneficios`) e botão de CTA fixo no topo (sticky, e retrátil ao rolar).
+1. **Header / Nav** — logo, menu de âncoras (`#problema`, `#solucao`, `#beneficios`, `#dashboard-proposal`, `#antes-depois`) e botão de CTA fixo no topo (sticky, e retrátil ao rolar).
 2. **Hero** — headline, texto de apoio, CTAs e um mockup animado em SVG de um "mapa da sala" mostrando estações de treino livres/ocupadas com uma rota sendo traçada em tempo real. Todo o bloco entra em cena com uma animação escalonada.
 3. **O problema** (`#problema`) — três cartões descrevendo os atritos que o produto resolve: congestionamento, inventário de halteres e ineficiência de tempo.
 4. **Como funciona** (`#solucao`) — três pilares explicados com diagramas SVG próprios:
@@ -24,8 +24,12 @@ Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do Ensino Médio
    - `02` Endereçamento de inventário (rack de halteres com sensor de falta)
    - `03` Fluxo catraca → app → sensores → rota
 5. **Benefícios** (`#beneficios`) — métricas lado a lado para aluno e para academia, com os números contando de 0 até o valor final ao entrar na tela.
-6. **CTA final** (`#cta`) — chamada para agendar demonstração ou falar com um especialista.
-7. **Footer** — marca e informações de rodapé.
+6. **Console ao vivo** (`#dashboard-proposal`) — dashboard, mapa interativo e simulador de fluxo em um único bloco funcional (detalhado na seção [Console ao vivo](#console-ao-vivo-dashboard--mapa--simulador) abaixo).
+7. **Racional de design** — três blocos de texto explicando as decisões de produto por trás do dashboard, do mapa interativo e da arquitetura técnica de dados em tempo real (proposta de migração de dados simulados para sensores reais via MQTT/WebSocket).
+8. **Previsão de IA** (`#previsao-ia`) — card de previsão de pico de ocupação, com gauge circular, badge de alerta e gráfico de barras por horário do dia.
+9. **Antes x Depois** (`#antes-depois`) — comparativo por equipamento (fila de pessoas x uso sem espera), com toggle interativo e resumo de tempo médio de espera.
+10. **CTA final** (`#cta`) — chamada para agendar demonstração ou falar com um especialista.
+11. **Footer** — marca e informações de rodapé.
 
 ---
 
@@ -33,14 +37,27 @@ Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do Ensino Médio
 
 Definido em variáveis CSS (`:root`) no topo do `<style>`:
 
-- **Cores**: fundo grafite escuro (`--bg`), superfícies (`--surface`, `--surface-2`), texto (`--text`, `--text-muted`, `--text-faint`) e três acentos semânticos — verde `--green` (livre/positivo), âmbar `--amber` (ocupado/atenção) e vermelho `--red` (alerta).
+- **Cores**: fundo grafite escuro (`--bg`), superfícies (`--surface`, `--surface-2`), texto (`--text`, `--text-muted`, `--text-faint`) e quatro acentos semânticos — verde `--green` (livre/positivo), âmbar `--amber` (reservado/atenção), vermelho `--red` (ocupado/alerta) e azul `--blue` (manutenção/neutro).
 - **Tipografia**:
   - `Big Shoulders Display` — títulos (`--display`)
   - `Inter` — corpo de texto (`--body`)
   - `JetBrains Mono` — dados, labels de sensores, timestamps (`--mono`)
   - Carregadas via Google Fonts no `<head>`.
-- **Componentes reutilizáveis**: `.btn` (`.btn-primary` / `.btn-ghost`), `.problem-card`, `.pillar` / `.pillar.reverse`, `.benefit-col`, `.eyebrow`, `.alert-tag`.
-- **Responsivo**: breakpoints em `920px` (grids viram coluna única), `900px` (pilares e cartões empilham) e `760px` (menu de âncoras oculto no mobile).
+- **Componentes reutilizáveis**: `.btn` (`.btn-primary` / `.btn-ghost`), `.problem-card`, `.pillar` / `.pillar.reverse`, `.benefit-col`, `.eyebrow`, `.alert-tag`, `.metric-card`, `.station`, `.ba-card`, `.prose`.
+- **Responsivo**: breakpoints em `1000px`/`920px` (grids do dashboard e do hero viram coluna única), `900px`/`860px` (pilares, painel de mapa e cartões antes/depois empilham) e `760px`/`620px`/`560px` (menu de âncoras oculto e grids reduzidos no mobile).
+
+---
+
+## Console ao vivo (Dashboard + Mapa + Simulador)
+
+Bloco central da página (`#dashboard-proposal`), pensado como três visões da **mesma fonte de dados**:
+
+- **Dashboard de métricas**: ocupação (métrica-herói, com gauge circular em SVG), aparelhos livres, aparelhos ocupados, tempo médio de espera, pessoas treinando e rotas ativas — todos recalculados a cada mudança de estado.
+- **Mapa interativo**: grade de estações clicáveis (não por hover, pensado para uso em totens/tablets), com 4 estados possíveis — livre, reservado, ocupado e manutenção — e um painel lateral (drawer) com tempo de uso atual, próximo aluno agendado e histórico de uso do aparelho selecionado.
+- **Simulador de fluxo**: botão que liga um `setInterval` (~1,4s) simulando entradas de alunos (catraca → reserva → deslocamento animado por um "ponto" na tela → ocupação), liberação de aparelhos após um tempo aleatório e entradas/saídas de manutenção — tudo gerado no navegador com `Math.random()` para fins de demonstração.
+- **Toggle Antes/Depois do console**: alterna entre o cenário simulado com o GreenFlow ativo e um cenário "sem sistema", em que todos os aparelhos aparecem como ocupados e sem informação de status, desabilitando o simulador.
+
+Os blocos de **racional de design** logo abaixo do console documentam, em texto, por que a ocupação foi escolhida como métrica-herói, por que o mapa usa clique em vez de hover, o porquê da paleta de 4 cores fixas, e como a arquitetura trocaria dados simulados por sensores reais (MQTT, WebSocket/SSE, banco de séries temporais) em um cenário de produção.
 
 ---
 
@@ -57,8 +74,9 @@ A página tem uma camada extra de interatividade, toda em JavaScript puro (sem b
 | **Tilt 3D no mockup do mapa** | Card do "mapa da sala" (`#floorCard`) | Rotaciona sutilmente em 3D (`rotateX`/`rotateY`) conforme a posição do mouse dentro do card. Só ativa em dispositivos com mouse (`hover: hover`). |
 | **Botões magnéticos** | Todos os `.btn` | O botão se desloca levemente na direção do cursor ao passar por cima, e o botão verde (`.btn-primary`) ganha um brilho que "varre" a superfície no hover. |
 | **Contadores animados** | Seção de benefícios (`#benefitsGrid`) | Números com `data-target` (ex: `-70`, `100`, `-90`, `+22`) contam de 0 até o valor final com easing, disparado pelo `IntersectionObserver` quando a seção entra na tela. |
-| **Reveal ao rolar + stagger** | Cartões de problema, pilares, seção de benefícios | Classe `.reveal` observada por `IntersectionObserver`; os três `.problem-card` têm `transition-delay` escalonado para não aparecerem todos ao mesmo tempo. |
-| **Micro-interações existentes** | Diagramas SVG | Pulso (`.pulse-ring`) e traço animado (`.route-line`) simulando sensores "ao vivo" e a rota sendo recalculada. |
+| **Reveal ao rolar + stagger** | Cartões de problema, pilares, seção de benefícios, console, blocos de racional, previsão de IA, antes/depois | Classe `.reveal` observada por `IntersectionObserver`; os três `.problem-card` têm `transition-delay` escalonado para não aparecerem todos ao mesmo tempo. |
+| **Simulador de fluxo** | Console ao vivo (`#dashboard-proposal`) | Loop em `setInterval` que muda estados de estação, anima "pontos" de pessoas entre a catraca e os aparelhos, e recalcula o dashboard a cada ciclo. |
+| **Micro-interações existentes** | Diagramas SVG | Pulso (`.pulse-ring`) e traço animado (`.route-line`) simulando sensores "ao vivo" e a rota sendo recalculada; barras do gráfico de previsão de IA com destaque visual no horário de pico. |
 
 ### Acessibilidade (`prefers-reduced-motion`)
 
@@ -66,7 +84,7 @@ Todos os efeitos acima respeitam a preferência do sistema operacional por movim
 - Animações e transições são desativadas globalmente (`animation: none !important; transition: none !important;`).
 - A barra de progresso e o spotlight são ocultados (`display: none`).
 - Elementos que dependiam de animação para ficar visíveis (hero, floor-card, `.reveal`) recebem `opacity: 1` e `transform: none` diretamente, garantindo que o conteúdo apareça normalmente mesmo sem as animações.
-- O JavaScript verifica `window.matchMedia('(prefers-reduced-motion: reduce)')` antes de registrar os listeners de spotlight, botão magnético e tilt 3D — ou seja, nem chegam a rodar para quem prefere menos movimento.
+- O JavaScript verifica `window.matchMedia('(prefers-reduced-motion: reduce)')` antes de registrar os listeners de spotlight, botão magnético e tilt 3D — ou seja, nem chegam a rodar para quem prefere menos movimento. Os contadores animados também caem direto no valor final sem animação de contagem.
 
 ---
 
@@ -114,7 +132,8 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
    - **Textos**: edite diretamente no HTML dentro de cada `<section>`.
    - **Cores**: altere as variáveis em `:root` no `<style>`.
    - **Número/mensagens do WhatsApp**: altere `WHATSAPP_NUMBER` e o array `BUTTON_CONFIGS` no script.
-   - **Velocidade/intensidade dos efeitos**: os principais parâmetros ajustáveis estão no primeiro `<script>` do arquivo — `duration` (velocidade dos contadores), os multiplicadores `* 0.15` / `* 0.3` (intensidade do efeito magnético dos botões) e `* 7` (intensidade do tilt 3D do mockup).
+   - **Dados do simulador**: ajuste `EQUIPMENT_POOL`, `FIRST_NAMES` e as probabilidades em `weightedStatus()` no script do console ao vivo.
+   - **Velocidade/intensidade dos efeitos**: os principais parâmetros ajustáveis estão no primeiro `<script>` do arquivo — `duration` (velocidade dos contadores), os multiplicadores `* 0.15` / `* 0.3` (intensidade do efeito magnético dos botões) e `* 7` (intensidade do tilt 3D do mockup). O intervalo do simulador (`1400`ms) fica no script do console.
 
 ---
 
@@ -123,14 +142,18 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 - 🗺️ Localização inteligente de equipamentos
 - 🤖 IA de previsão de ocupação
 - 📊 Dashboard em tempo real
+- 🖱️ Mapa interativo com painel de detalhes por aparelho
+- ▶️ Simulador de fluxo de alunos
 - 📈 Indicadores de utilização
 - 📍 Roteirização inteligente
 - 📦 Controle de inventário dos halteres
+- ⚖️ Comparativo Antes x Depois por equipamento
 - 📱 Interface responsiva
 - 💬 Integração com WhatsApp
 - 🎨 Design moderno em Dark Mode
 
 ---
+
 ## Compatibilidade
 
 - Navegadores modernos (Chrome, Firefox, Safari, Edge — últimas versões).
@@ -147,9 +170,11 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 - Navegação inteligente baseada na ocupação dos equipamentos.
 - Previsão de horários de pico utilizando IA.
 - Controle de inventário por sensores.
+- Console ao vivo com dashboard, mapa e simulador de fluxo integrados na mesma fonte de dados.
 - Código desenvolvido sem frameworks, utilizando apenas HTML, CSS e JavaScript.
 
 ---
+
 ## Autor
 
 **Eduardo Godoy**
@@ -162,7 +187,7 @@ Nenhuma outra alteração é necessária — o script detecta o novo botão auto
 
 ## Status
 
-Projeto possui um conceitual em desenvolvimento para apresentação do TCC.
+🟢 Projeto possui um conceitual em desenvolvimento para apresentação do TCC.
 
 ---
 
